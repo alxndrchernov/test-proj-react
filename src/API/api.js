@@ -5,7 +5,7 @@ export const loginApi = (name, password) => fetch(`${path}/login`, {
     credentials: 'same-origin',
     mode: 'cors',
     redirect: 'follow',
-    headers: {"Content-Type": "application/json",Accept: 'application/json', 'Access-Control-Allow-Origin': '*',},
+    headers: {"Content-Type": "application/json", Accept: 'application/json', 'Access-Control-Allow-Origin': '*',},
     body: JSON.stringify({name, password})
 })
 
@@ -15,4 +15,10 @@ export const setEventApi = (accessToken, data) => fetch(`${path}/create`, {
     method: "POST",
     headers: {"Authorization": accessToken, "Content-Type": 'application/json'},
     body: JSON.stringify(data)
+})
+
+export const editEventApi = (accessToken, event) => fetch(`${path}/edit`, {
+    method: "POST",
+    headers: {"Authorization": accessToken, "Content-Type": "application/json"},
+    body: JSON.stringify(event)
 })

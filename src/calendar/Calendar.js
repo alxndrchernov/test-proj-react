@@ -7,7 +7,7 @@ import CalendarGrid from "./CalendarGrid";
 import MyInput from "./MyInput";
 
 import '../App.css'
-import {setEventApi} from "../API/api";
+import {editEventApi, setEventApi} from "../API/api";
 import {getCookie} from "../common/cookie";
 
 function Calendar({eventsData}) {
@@ -70,16 +70,18 @@ function Calendar({eventsData}) {
 
 			if (method === 'Update') {
 				// TODO: если ошибка, не редактировать событие
+				await editEventApi(auth,event).then(async res=>{
+					const response = await res.json();
+				})
 				setEvents(events.map(eventEl => eventEl.id === event.id ? event : eventEl))
-				localStorage.setItem('events', JSON.stringify(events.map(eventEl => eventEl.id === event.id ? event : eventEl)))
+				// localStorage.setItem('events', JSON.stringify(events.map(eventEl => eventEl.id === event.id ? event : eventEl)))
 			}
 			else {
 				// TODO: если ошибка, не добавлять событие
 				await setEventApi(auth,event).then(async res=>{
-					console.log(res.json())
 				})
 				setEvents([...events, event])
-				localStorage.setItem('events', JSON.stringify([...events, event]))
+				// localStorage.setItem('events', JSON.stringify([...events, event]))
 			}
 		}
 		cancelForm();
