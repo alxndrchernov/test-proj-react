@@ -7,8 +7,10 @@ import CalendarGrid from "./CalendarGrid";
 import MyInput from "./MyInput";
 
 import '../App.css'
+import {setEventApi} from "../API/api";
+import {getCookie} from "../common/cookie";
 
-function Calendar() {
+function Calendar({eventsData}) {
 
 	moment.updateLocale("en", { week: { dow: 1 } });
 	const [today, setToday] = useState(moment());
@@ -34,11 +36,12 @@ function Calendar() {
 
 
 	useEffect(() => {
+		setEvents(eventsData)
 		if (localStorage.getItem('events')) {
 			const notes = JSON.parse(localStorage.getItem('events'))
 			setEvents(notes);
 		}
-	}, [])
+	}, [eventsData])
 
 
 	const openEventsForm = (methodName, eventForUpdate) => {
@@ -61,14 +64,20 @@ function Calendar() {
 		)
 	}
 
-	const creUpNote = () => {
+	const creUpNote = async () => {
+		const auth = getCookie('auth')
 		if (event.title.length > 0) {
 
 			if (method === 'Update') {
+				// TODO: если ошибка, не редактировать событие
 				setEvents(events.map(eventEl => eventEl.id === event.id ? event : eventEl))
 				localStorage.setItem('events', JSON.stringify(events.map(eventEl => eventEl.id === event.id ? event : eventEl)))
 			}
 			else {
+				// TODO: если ошибка, не добавлять событие
+				await setEventApi(auth,event).then(async res=>{
+					console.log(res.json())
+				})
 				setEvents([...events, event])
 				localStorage.setItem('events', JSON.stringify([...events, event]))
 			}
